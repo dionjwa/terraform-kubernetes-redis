@@ -103,20 +103,15 @@ resource kubernetes_deployment redis_slave {
             container_port = "${var.slave_port}"
           }
 
-          
           resources {
             requests {
               cpu = lookup(merge(local.default_resource_requests, var.slave_resource_requests), "cpu", null)
               memory = lookup(merge(local.default_resource_requests, var.slave_resource_requests), "memory", null)
             }
-
             limits {
               cpu = lookup(merge(local.default_resource_limits, var.slave_resource_limits), "cpu", null)
               memory = lookup(merge(local.default_resource_limits, var.slave_resource_limits), "memory", null)
             }
-  
-            # requests = merge(local.default_resource_requests, var.slave_resource_requests)
-            # limits = merge(local.default_resource_limits, var.slave_resource_limits)
           }
         }
       }
