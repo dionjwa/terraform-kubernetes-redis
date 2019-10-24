@@ -10,13 +10,13 @@ Open source, advanced key-value store. It is often referred to as a data structu
 
 ## Requirements
 
-This module requires an unofficial Kubernetes provider fork, available [here](https://github.com/sl1pm4t/terraform-provider-kubernetes). The fork provides support for additional resource types (`Deployment`, `StatefulSet`) that are currently not available in the official build.
+This module has been updated for Terraform 0.12 and uses the new kubernetes provider that provides e.g `Deployment` and `StatefulSet` resources without relying on an unofficial fork.
 
 ## Example Usage
 
 ```hcl
 module redis {
-  source = "git::https://github.com/sl1pm4t/terraform-kubernetes-redis"
+  source = "git::https://github.com/dionjwa/terraform-kubernetes-redis?ref=v0.1.0"
 
   kubernetes_namespace = "redis"
 

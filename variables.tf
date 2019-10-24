@@ -9,11 +9,11 @@ variable redis_image_registry {
 }
 
 variable redis_image_repository {
-  default = "bitnami/redis"
+  default = "redis"
 }
 
 variable redis_image_tag {
-  default = "4.0.9"
+  default = "5-alpine"
 }
 
 variable redis_image_pull_policy {
