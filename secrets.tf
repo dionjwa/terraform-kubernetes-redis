@@ -11,7 +11,7 @@ resource kubernetes_secret redis {
   }
 
   data {
-    "redis-password" = "${trimspace(coalesce(var.password, join("", random_string.redis_password.*.result), " "))}"
+    redis-password = "${trimspace(coalesce(var.password, join("", random_string.redis_password.*.result), " "))}"
   }
 
   type = "Opaque"

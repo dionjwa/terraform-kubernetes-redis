@@ -232,7 +232,14 @@ EOF
 }
 
 variable master_liveness_probe {
-  type        = "map"
+  type = object({
+    enabled = bool
+    initial_delay_seconds = number
+    period_seconds = number
+    timeout_seconds = number
+    success_threshold = number
+    failure_threshold = number
+  })
   description = "Redis Master Liveness Probe configuration"
 
   default = {
@@ -246,11 +253,18 @@ variable master_liveness_probe {
 }
 
 variable master_readiness_probe {
-  type        = "map"
+  type = object({
+    enabled = bool
+    initial_delay_seconds = number
+    period_seconds = number
+    timeout_seconds = number
+    success_threshold = number
+    failure_threshold = number
+  })
   description = "Redis Master Readiness Probe configuration"
 
   default = {
-    enabled               = true
+    enabled               = "true"
     initial_delay_seconds = 30
     period_seconds        = 10
     timeout_seconds       = 5
@@ -265,7 +279,13 @@ variable master_pod_annotations {
 }
 
 variable master_security_context {
-  default {
+  type = object({
+    enabled = bool
+    fs_group = number
+    run_as_user = number
+  })
+
+  default = {
     enabled     = true
     fs_group    = 1001
     run_as_user = 1001
