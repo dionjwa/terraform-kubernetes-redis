@@ -3,7 +3,7 @@ resource kubernetes_stateful_set redis_master {
     name      = "redis-master"
     namespace = "${var.kubernetes_namespace}"
 
-    labels {
+    labels = {
       app     = "${local.name}"
       chart   = "${local.chart}"
       release = "${var.release_name}"
@@ -12,15 +12,17 @@ resource kubernetes_stateful_set redis_master {
 
   spec {
     selector {
-      role = "master"
-      app  = "${local.name}"
+      match_labels = {
+        role = "master"
+        app  = "${local.name}"
+      }
     }
 
     service_name = "redis-master"
 
     template {
       metadata {
-        labels {
+        labels = {
           role = "master"
           app  = "${local.name}"
         }
@@ -115,9 +117,14 @@ resource kubernetes_stateful_set redis_master {
           }
 
           resources {
-            requests = ["${merge(local.default_resource_requests, var.master_resource_requests)}"]
-
-            limits = ["${merge(local.default_resource_limits, var.master_resource_limits)}"]
+            requests {
+              cpu = lookup(merge(local.default_resource_requests, var.master_resource_requests), "cpu", null)
+              memory = lookup(merge(local.default_resource_requests, var.master_resource_requests), "memory", null)
+            }
+            limits {
+              cpu = lookup(merge(local.default_resource_limits, var.master_resource_limits), "cpu", null)
+              memory = lookup(merge(local.default_resource_limits, var.master_resource_limits), "memory", null)
+            }
           }
 
           volume_mount {
@@ -135,11 +142,11 @@ resource kubernetes_stateful_set redis_master {
       }
     }
 
-    volume_claim_templates {
+    volume_claim_template {
       metadata {
         name = "redis-data"
 
-        labels {
+        labels = {
           app       = "${local.name}"
           component = "master"
           chart     = "${local.chart}"
@@ -150,7 +157,7 @@ resource kubernetes_stateful_set redis_master {
         access_modes = "${var.master_persistence_access_modes}"
 
         resources {
-          requests {
+          requests = {
             storage = "${var.master_persistence_size}"
           }
         }

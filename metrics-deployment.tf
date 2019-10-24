@@ -5,7 +5,7 @@ resource kubernetes_deployment redis_metrics {
     name      = "${local.fullname}-metrics"
     namespace = "${var.kubernetes_namespace}"
 
-    labels {
+    labels = {
       app     = "${local.name}"
       chart   = "${local.chart}"
       release = "${var.release_name}"
@@ -14,13 +14,15 @@ resource kubernetes_deployment redis_metrics {
 
   spec {
     selector {
-      app  = "${local.name}"
-      role = "metrics"
+      match_labels = {
+        app  = "${local.name}"
+        role = "metrics"
+      }
     }
 
     template {
       metadata {
-        labels {
+        labels = {
           app  = "${local.name}"
           role = "metrics"
 
@@ -31,7 +33,8 @@ resource kubernetes_deployment redis_metrics {
       }
 
       spec {
-        image_pull_secrets = ["${var.metrics_image_pull_secrets}"]
+        # TODO fix this
+        # image_pull_secrets = var.metrics_image_pull_secrets
 
         node_selector = "${var.kubernetes_node_selector}"
 
@@ -67,9 +70,14 @@ resource kubernetes_deployment redis_metrics {
           }
 
           resources {
-            requests = ["${merge(local.default_resource_requests, var.metrics_resource_requests)}"]
-
-            limits = ["${merge(local.default_resource_limits, var.metrics_resource_limits)}"]
+            requests {
+              cpu = lookup(merge(local.default_resource_requests, var.metrics_resource_requests), "cpu", null)
+              memory = lookup(merge(local.default_resource_requests, var.metrics_resource_requests), "memory", null)
+            }
+            limits {
+              cpu = lookup(merge(local.default_resource_limits, var.metrics_resource_limits), "cpu", null)
+              memory = lookup(merge(local.default_resource_limits, var.metrics_resource_limits), "memory", null)
+            }
           }
         }
       }

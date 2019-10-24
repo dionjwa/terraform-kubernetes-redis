@@ -3,14 +3,14 @@ resource kubernetes_secret redis {
     name      = "${local.fullname}"
     namespace = "${var.kubernetes_namespace}"
 
-    labels {
+    labels = {
       app     = "${local.name}"
       chart   = "${local.chart}"
       release = "${var.release_name}"
     }
   }
 
-  data {
+  data = {
     redis-password = "${trimspace(coalesce(var.password, join("", random_string.redis_password.*.result), " "))}"
   }
 
